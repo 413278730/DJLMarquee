@@ -19,6 +19,7 @@
     NSInteger _showIndex;
     NSTimer* _timer;
     CGFloat _height;
+    BOOL _timerStar;
 }
 #pragma mark 构造方法
 
@@ -46,6 +47,25 @@
 {
     CGSize titleSize = [value boundingRectWithSize:CGSizeMake(0, height) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:fontSize]} context:nil].size;
     return titleSize.width;
+}
+
+/**
+ 添加新的数据源
+
+ @param str 字符串
+ */
+-(void)addNewItemWithStr:(NSString *)str
+{
+    NSMutableArray* arr = [[NSMutableArray alloc] initWithArray:self.dataSource];
+    [arr addObject:str];
+    self.dataSource = arr;
+    //如果是不循环的跑马灯，则需要重新开启跑马灯
+    if (!_timerStar) {
+        _showIndex = self.dataSource.count-1;
+        [self addNewLabel];
+        [_timer setFireDate:[NSDate distantPast]];
+        _timerStar = YES;
+    }
 }
 /**
  创建label
@@ -79,6 +99,7 @@
         [[NSRunLoop mainRunLoop] addTimer:_timer forMode:NSDefaultRunLoopMode];
     }
     [_timer setFireDate:[NSDate distantPast]];
+    _timerStar = YES;
 }
 /**
  添加新的label
@@ -114,6 +135,7 @@
         //移除所有视图后，关闭定时器
         if (self.subviews.count == 0) {
             [_timer setFireDate:[NSDate distantFuture]];
+            _timerStar = NO;
             _showIndex = 0;
             if (self.replace == DJLMarqueeReplaceTypeReplaceAll)
                 [self starMarQuee];

@@ -42,5 +42,10 @@ typedef NS_ENUM(NSInteger, DJLMarqueeReplaceType) {
  开始跑马灯
  */
 - (void)starMarQuee;
+/**
+ 添加新的数据源
 
+ @param str 显示字符串
+ */
+- (void)addNewItemWithStr:(NSString*)str;
 @end
